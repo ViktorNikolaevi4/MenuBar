@@ -3,9 +3,6 @@
 import Foundation
 import SwiftUI
 
-
-import SwiftUI
-
 struct TickerRow: View {
     let ticker: Ticker
     var onRemove: () -> Void
@@ -21,14 +18,13 @@ struct TickerRow: View {
         HStack(spacing: 12) {
             // 1) Тикер
             VStack(alignment: .leading, spacing: 2) {
-                Text(ticker.base)
-                    .font(.headline)
-                Text(ticker.symbol.suffix(4)) // например, USDT
+                Text(ticker.base).font(.headline)
+                Text(ticker.symbol.suffix(4)) // USDT
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
-            // 2) График (растягивается)
+            // 2) График
             Sparkline(values: ticker.history)
                 .frame(height: 28)
                 .frame(maxWidth: .infinity)
@@ -46,6 +42,8 @@ struct TickerRow: View {
             .buttonStyle(.plain)
         }
         .padding(10)
+        .frame(height: 60) // фиксируем высоту строки для расчёта области видимости
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
+
