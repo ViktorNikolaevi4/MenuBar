@@ -8,6 +8,8 @@ final class TickerViewModel: ObservableObject {
 
     private var connectAttempt = 0
 
+    private static let symbolsKey = "savedSymbols"
+
 
     private var symbols: [String]
     private lazy var session: URLSession = {
@@ -22,8 +24,17 @@ final class TickerViewModel: ObservableObject {
     private let maxHistory = 60
 
     init(initialSymbols: [String]) {
-        self.symbols = initialSymbols
+        // 1) грузим сохранённые тикеры, если есть
+        if let saved = UserDefaults.standard.array(forKey: Self.symbolsKey) as? [String], !saved.isEmpty {
+            self.symbols = saved
+        } else {
+            self.symbols = initialSymbols
+        }
         connect()
+    }
+
+    private func saveSymbols() {
+        UserDefaults.standard.set(symbols, forKey: Self.symbolsKey)
     }
 
     // MARK: - Public API
@@ -35,6 +46,7 @@ final class TickerViewModel: ObservableObject {
         let s = raw.hasSuffix("USDT") ? raw : raw + "USDT"
         guard !symbols.contains(s) else { inputSymbol = ""; return }
         symbols.append(s)
+        saveSymbols()
         inputSymbol = ""
         reconnect()
     }
@@ -42,6 +54,7 @@ final class TickerViewModel: ObservableObject {
     func remove(symbol: String) {
         symbols.removeAll { $0 == symbol }
         tickers[symbol] = nil
+        saveSymbols()
         reconnect()
     }
 

@@ -10,8 +10,10 @@ struct CryptoMenuBarApp: App {
         MenuBarExtra("Crypto", systemImage: "bitcoinsign.circle") {
             ContentView()
                 .environmentObject(vm)
-                .frame(width: 320)
+                .frame(minWidth: 380) // желаемая ширина контента
         }
         .menuBarExtraStyle(.window)
+        .defaultSize(width: 480, height: 600)   // стартовый размер окна
+        .windowResizability(.contentSize)       // можно .automatic, чтобы тянуть вручную
     }
 }
